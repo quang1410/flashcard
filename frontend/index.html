@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Flashcard</title>
+    <script>
+      // Phải chạy TRƯỚC lần vẽ đầu tiên: đặt data-theme trong React sẽ nháy một khung hình sai màu.
+      // Hai khoá dưới trùng với THEME_KEY (src/lib/theme.ts) và LOCALE_KEY (src/i18n/config.ts);
+      // lib/theme.test.ts canh điều đó.
+      (function () {
+        var root = document.documentElement;
+        var theme = "light";
+        try {
+          var stored = localStorage.getItem("flashcard.theme");
+          if (stored === "light" || stored === "dark") theme = stored;
+          else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) theme = "dark";
+          root.lang = localStorage.getItem("flashcard.locale") === "en" ? "en" : "vi";
+        } catch (e) {
+          // storage bị chặn (chế độ riêng tư): vẫn đặt theme hợp lệ theo hệ điều hành
+          if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) theme = "dark";
+        }
+        root.setAttribute("data-theme", theme);
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

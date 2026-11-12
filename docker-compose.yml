@@ -1,0 +1,39 @@
+# Postgres local cho dev. Production dùng Postgres của Supabase (docs/deployment sẽ viết ở K-10).
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: flashcard
+    ports:
+      # 54322 thay vì 5432 để không đụng Postgres khác trên máy.
+      - "127.0.0.1:54322:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Chạy một lần khi volume còn trống: tạo role + auth.users + auth.uid() giả lập Supabase.
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d flashcard"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  # Chạy một lần rồi thoát (make migrate). Cùng công cụ với deploy lên Supabase: golang-migrate.
+  migrate:
+    image: migrate/migrate:v4.17.1
+    profiles: ["tools"]
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend/migrations:/migrations:ro
+    command:
+      [
+        "-path", "/migrations",
+        "-database", "postgres://postgres:postgres@db:5432/flashcard?sslmode=disable",
+        "up",
+      ]
+
+volumes:
+  pgdata:

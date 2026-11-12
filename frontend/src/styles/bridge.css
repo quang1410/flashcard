@@ -1,0 +1,104 @@
+/* Nối token ngữ nghĩa của theme sang tên mà Tailwind v4 và shadcn/ui dùng.
+   Nguồn sự thật là ./theme.css — file này chỉ đổi tên, không đổi giá trị.
+
+   BẪY 1: Figma đảo tên có chủ ý.
+     --surface-raised là nền TRANG   -> background
+     --surface-base   là nền THẺ     -> card
+   Chép theo trực giác là sai nền toàn app.
+
+   BẪY 2: `inline` là bắt buộc. Không có nó, Tailwind chốt giá trị lúc build
+   và utility sẽ không đổi màu khi [data-theme] đổi. */
+
+:root {
+  --radius: var(--radius-default);
+}
+
+/* 5 màu cấp độ (thiết kế §8). Mỗi token dùng được cho cả chữ lẫn mảng màu: đạt >= 4,5:1 trên mọi nền surface.
+   Giao diện sáng dùng bậc 700 (bậc 600 của amber/green chỉ 3,2–3,3:1); giao diện tối dùng bậc 400.
+   Màu không là tín hiệu duy nhất: nơi nào hiện cấp độ cũng kèm nhãn "Cấp N". */
+:root,
+[data-theme="light"] {
+  --level-1: var(--color-red-700);
+  --level-2: var(--color-amber-700);
+  --level-3: var(--color-green-700);
+  --level-4: var(--color-blue-700);
+  --level-5: var(--color-violet-700);
+
+  /* Chữ lỗi / cảnh báo: --status-error trên nền sáng chỉ 3,76:1 nên chữ dùng bậc đậm hơn. */
+  --loss-text: var(--color-red-700);
+  --warn-text: var(--status-warning-text);
+
+  /* Nút hành động chính. Chữ trắng trên --primary chỉ đạt 2,55:1, nên nút dùng teal đậm. */
+  --cta: var(--color-teal-900);
+  --cta-foreground: var(--color-white);
+
+  /* Vòng focus. --focus-ring của theme chỉ 2,58:1 trên nền trắng (< 3:1 của WCAG 1.4.11). */
+  --ring-color: var(--gray-500);
+}
+
+[data-theme="dark"] {
+  --level-1: var(--color-red-400);
+  --level-2: var(--color-amber-400);
+  --level-3: var(--color-green-400);
+  --level-4: var(--color-blue-400);
+  --level-5: var(--color-violet-400);
+
+  --loss-text: var(--color-red-300);
+  --warn-text: var(--status-warning);
+
+  --cta: var(--primary);
+  --cta-foreground: var(--gray-950);
+
+  --ring-color: var(--gray-400);
+}
+
+@theme inline {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: var(--surface-raised);
+  --color-foreground: var(--text-primary);
+  --color-card: var(--surface-base);
+  --color-card-foreground: var(--text-primary);
+  --color-popover: var(--surface-modal);
+  --color-popover-foreground: var(--text-primary);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-cta: var(--cta);
+  --color-cta-foreground: var(--cta-foreground);
+  --color-secondary: var(--interactive-bg);
+  --color-secondary-foreground: var(--text-primary);
+  --color-muted: var(--surface-sunken);
+  --color-muted-foreground: var(--text-muted);
+  --color-accent: var(--interactive-bg-hover);
+  --color-accent-foreground: var(--text-primary);
+  --color-destructive: var(--status-error);
+  --color-destructive-foreground: var(--status-error-text);
+
+  /* text-loss / text-warn cho CHỮ; bg-destructive vẫn hợp lệ cho mảng màu. */
+  --color-loss: var(--loss-text);
+  --color-warn: var(--warn-text);
+  --color-success: var(--status-success);
+  --color-warning: var(--status-warning);
+  --color-info: var(--status-info);
+
+  /* Nền theo BẬC, gọi thẳng bằng tên của theme (bg-surface-sunken, ...). Tailwind v4 chỉ đúc utility
+     cho tên đã khai trong @theme, nên thiếu dòng nào thì lớp đó không sinh ra CSS nào. */
+  --color-surface-base: var(--surface-base);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-surface-modal: var(--surface-modal);
+  --color-interactive-bg: var(--interactive-bg);
+  --color-interactive-bg-hover: var(--interactive-bg-hover);
+  --color-border-muted: var(--border-muted);
+  --color-border-strong: var(--border-strong);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border-default);
+  --color-input: var(--border-input);
+  --color-ring: var(--ring-color);
+
+  --color-level-1: var(--level-1);
+  --color-level-2: var(--level-2);
+  --color-level-3: var(--level-3);
+  --color-level-4: var(--level-4);
+  --color-level-5: var(--level-5);
+}

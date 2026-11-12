@@ -1,0 +1,21 @@
+# Go
+/backend/bin/
+*.test
+*.out
+
+# Node
+node_modules/
+dist/
+/frontend/playwright-report/
+/frontend/test-results/
+/frontend/.vite/
+
+# Env
+.env
+.env.local
+
+# OS
+.DS_Store
+
+# Superpowers scratch workspace
+.superpowers/

@@ -1,0 +1,68 @@
+@import "tailwindcss";
+/* Inter tự host (không CDN). Bản mặc định của fontsource gồm cả subset vietnamese và latin-ext;
+   trình duyệt chỉ tải subset cần dùng, font-display: swap. */
+@import "@fontsource-variable/inter";
+@import "./theme.css";
+@import "./bridge.css";
+
+/* Buộc biến thể `dark:` bám vào [data-theme="dark"] thay vì media query của hệ điều hành.
+   Mặc định của Tailwind v4 là media query, nên thiếu dòng này thì style dark bật theo máy
+   và lệch hẳn với công tắc giao diện của app. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Cho trình duyệt biết giao diện đang sáng hay tối, để thanh cuộn và ô nhập gốc đổi theo
+   (thiếu dòng này, ở giao diện tối thanh cuộn vẫn sáng). */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+@layer base {
+  /* Preflight của Tailwind v4 đặt `border: 0 solid` không có màu, nên `class="border"` trần lấy màu CHỮ làm màu viền
+     (đen kịt ở sáng, trắng toát ở tối). Buộc về token của theme ở đây thay vì thêm border-border từng chỗ. */
+  *,
+  ::after,
+  ::before,
+  ::backdrop {
+    border-color: var(--border-default);
+  }
+
+  body {
+    background-color: var(--surface-raised);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+  }
+
+  /* >= 16px: iOS Safari tự phóng to trang khi focus vào ô nhập nhỏ hơn mức này. */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring-color);
+    outline-offset: 2px;
+  }
+
+  /* <main> chỉ là đích focus bằng code (skip link, đổi trang), không phải điều khiển: viền cả vùng nội dung
+     trông nặng và không giúp ai. Mọi điều khiển thật bên trong vẫn có viền focus ở trên. */
+  main:focus {
+    outline: none;
+  }
+}
+
+/* Người dùng bật "giảm chuyển động": tắt transition và animation (lật thẻ ở K-08 cũng theo luật này). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
